@@ -2,6 +2,8 @@
 #include <string>
 #include <gdx.hpp>
 
+using namespace std::literals::string_literals;
+
 static void BM_gdxSimpleWrite(benchmark::State &state)
 {
     std::string msg;
@@ -10,13 +12,19 @@ static void BM_gdxSimpleWrite(benchmark::State &state)
     std::array<double, 5> values{};
     int errNr{};
     gdx.gdxOpenWrite("bigfile.gdx", "benchmark", errNr);
-    gdx.gdxDataWriteRawStart("a", "", 0, 0, 0);
-    for (int i{}; i < 1000; i++)
+    for (auto _ : state)
     {
-        gdx.gdxDataWriteRaw(keys.data(), values.data());
+        for (int j{}; j < 10; j++)
+        {
+            gdx.gdxDataWriteRawStart(("a"s + std::to_string(j)).c_str(), "", 0, 0, 0);
+            for (int i{}; i < 1000; i++)
+            {
+                gdx.gdxDataWriteRaw(keys.data(), values.data());
+            }
+            gdx.gdxDataWriteDone();
+        }
+        gdx.gdxClose();
     }
-    gdx.gdxDataWriteDone();
-    gdx.gdxClose();
 }
 BENCHMARK(BM_gdxSimpleWrite);
 
