@@ -18,8 +18,10 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(google_benchmark)
 
 add_executable(my_benchmark_executable main.cpp)
-target_include_directories(my_benchmark_executable PRIVATE gdx/src)
+target_include_directories(my_benchmark_executable PRIVATE gdx/src gdx/src/gdlib gdx/src/rtl gdx/generated)
+target_link_directories(my_benchmark_executable PRIVATE build-gdx)
 target_link_libraries(my_benchmark_executable
     PRIVATE
 	benchmark::benchmark
+    gdx-static
 )
