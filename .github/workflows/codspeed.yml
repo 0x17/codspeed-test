@@ -15,8 +15,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Build the benchmark target(s)
+      - name: Build GDX and the benchmark target(s)
         run: |
+          mkdir build-gdx
+          cd build-gdx
+          cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo ../gdx
+          cmake --build .
+          cd ..
           mkdir build
           cd build
           cmake -DCODSPEED_MODE=instrumentation ..

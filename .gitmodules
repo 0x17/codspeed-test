@@ -1,0 +1,4 @@
+[submodule "gdx"]
+	path = gdx
+	url = https://github.com/GAMS-dev/gdx
+	branch = develop
