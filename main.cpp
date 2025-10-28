@@ -1,3 +1,5 @@
+#include <benchmark/benchmark.h>
+
 // Define the function under test
 static void BM_StringCopy(benchmark::State &state)
 {
