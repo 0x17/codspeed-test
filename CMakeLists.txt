@@ -17,9 +17,8 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(google_benchmark)
 
-# Declare your benchmark executable and its sources here
 add_executable(my_benchmark_executable main.cpp)
-
-# Link your executable against the `benchmark::benchmark`, the `google_benchmark` library
-# Note: the first argument must match the first argument of the `add_executable` call
-target_link_libraries(my_benchmark_executable benchmark::benchmark)
+target_link_libraries(my_benchmark_executable
+    PRIVATE
+	benchmark::benchmark
+)

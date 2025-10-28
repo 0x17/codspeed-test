@@ -1,6 +1,13 @@
 #include <benchmark/benchmark.h>
 #include <cstring>
 #include <string>
+/*#include <gdx/gdx.hpp>
+
+static void BM_gdxSimpleWrite(benchmark::State &state)
+{
+    std::string msg;
+    gdx::TGXFileObj gdx{msg};
+}*/
 
 // Define the function under test
 static void BM_StringCopy(benchmark::State &state)
