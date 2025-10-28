@@ -4,7 +4,7 @@
 
 using namespace std::literals::string_literals;
 
-constexpr int numSymbols{10}, numRecords{5000};
+constexpr int numSymbols{2*10}, numRecords{2*5000};
 
 static void BM_gdxWriteReadRaw(benchmark::State &state)
 {
