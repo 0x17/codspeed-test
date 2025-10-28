@@ -4,29 +4,44 @@
 
 using namespace std::literals::string_literals;
 
-static void BM_gdxSimpleWrite(benchmark::State &state)
+constexpr int numSymbols{10}, numRecords{5000};
+
+static void BM_gdxWriteReadRaw(benchmark::State &state)
 {
     std::string msg;
-    gdx::TGXFileObj gdx{msg};
     std::array<int, 20> keys{};
     std::array<double, 5> values{};
-    int errNr{};
-    gdx.gdxOpenWrite("bigfile.gdx", "benchmark", errNr);
+    int errNr{}, nrRecs {}, dimFrst {};
+    const std::string fn{"bigfile.gdx"};
     for (auto _ : state)
     {
-        for (int j{}; j < 10; j++)
         {
-            gdx.gdxDataWriteRawStart(("a"s + std::to_string(j)).c_str(), "", 0, 0, 0);
-            for (int i{}; i < 1000; i++)
+            gdx::TGXFileObj gdx{msg};
+            gdx.gdxOpenWrite(fn.c_str(), "benchmark", errNr);
+            for (int j{}; j < numSymbols; j++)
             {
-                gdx.gdxDataWriteRaw(keys.data(), values.data());
+                gdx.gdxDataWriteRawStart(("a"s + std::to_string(j)).c_str(), "", 0, 0, 0);
+                for (int i{}; i < numRecords; i++)
+                    gdx.gdxDataWriteRaw(keys.data(), values.data());
+                gdx.gdxDataWriteDone();
             }
-            gdx.gdxDataWriteDone();
+            gdx.gdxClose();
         }
-        gdx.gdxClose();
+        {
+            gdx::TGXFileObj gdx{msg};
+            gdx.gdxOpenRead(fn.c_str(), errNr);
+            for (int j{}; j < numSymbols; j++)
+            {
+                gdx.gdxDataReadRawStart(j + 1, nrRecs);
+                for (int i{}; i < numRecords; i++)
+                    gdx.gdxDataReadRaw(keys.data(), values.data(), dimFrst);
+                gdx.gdxDataWriteDone();
+            }
+            gdx.gdxClose();
+        }
     }
 }
-BENCHMARK(BM_gdxSimpleWrite);
+BENCHMARK(BM_gdxWriteReadRaw);
 
 // Entrypoint of the benchmark executable
 BENCHMARK_MAIN();
