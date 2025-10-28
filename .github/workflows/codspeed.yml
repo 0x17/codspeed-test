@@ -1,0 +1,29 @@
+name: CodSpeed Benchmarks
+
+on:
+  push:
+    branches:
+      - "main" # or "master"
+  pull_request:
+  # `workflow_dispatch` allows CodSpeed to trigger backtest
+  # performance analysis in order to generate initial data.
+  workflow_dispatch:
+
+jobs:
+  benchmarks:
+    name: Run benchmarks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build the benchmark target(s)
+        run: |
+          mkdir build
+          cd build
+          cmake -DCODSPEED_MODE=instrumentation ..
+          make -j
+      - name: Run the benchmarks
+        uses: CodSpeedHQ/action@v4
+        with:
+          mode: instrumentation
+          run: ./build/my_benchmark_executable
+          token: ${{ secrets.CODSPEED_TOKEN }} # optional for public repos
